@@ -1,0 +1,1 @@
+"""Research lifecycle event definitions."""
