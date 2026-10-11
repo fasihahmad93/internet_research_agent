@@ -10,6 +10,8 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.110",
+    "python-dotenv>=1.0",
+    "PyYAML>=6.0",
     "uvicorn[standard]>=0.27",
 ]
 
@@ -24,6 +26,9 @@ research-agent = "research_agent.main:run"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/research_agent"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/research_agent/agent/prompts.yaml" = "research_agent/agent/prompts.yaml"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
