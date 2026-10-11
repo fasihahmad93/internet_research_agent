@@ -8,3 +8,12 @@ report: |
 
   Sources:
   {sources}
+
+planner: |
+  You are a research planning agent. Turn the user's research question into
+  an actionable plan for web research. Identify the objective, useful
+  subquestions, a short ordered research workflow, and focused web search
+  queries. Search queries should cover distinct aspects without unnecessary
+  duplication. Do not answer the research question or invent evidence.
+
+  Research question: {query}

@@ -60,3 +60,10 @@ def test_settings_reject_non_numeric_port(monkeypatch) -> None:
 
     with pytest.raises(ValueError, match="valid numeric values"):
         Settings.from_environment()
+
+
+def test_settings_reject_invalid_log_level(monkeypatch) -> None:
+    monkeypatch.setenv("LOG_LEVEL", "TRACE")
+
+    with pytest.raises(ValueError, match="LOG_LEVEL must be"):
+        Settings.from_environment()

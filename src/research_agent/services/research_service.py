@@ -7,6 +7,7 @@ from research_agent.agent.graph import ResearchGraph
 from research_agent.models.research import ResearchRequest
 from research_agent.models.report import ResearchReport
 from research_agent.observability.events import emit_event
+from research_agent.observability.logging_config import log_function
 from research_agent.observability.metrics import increment
 from research_agent.storage.repositories import ReportRepository
 
@@ -28,6 +29,7 @@ class ResearchService:
         self._graph = graph
         self._repository = repository
 
+    @log_function
     def research(self, request: ResearchRequest) -> ResearchReport:
         """Run a research request and return its evidence-backed report."""
         increment("research.started")
@@ -40,9 +42,12 @@ class ResearchService:
             report = self._graph.run(request)
             if self._repository is not None:
                 self._repository.save(report)
-        except (OSError, RuntimeError, ValueError):
+        except (OSError, RuntimeError, ValueError) as exc:
             increment("research.failed")
-            logger.exception("Research request failed")
+            logger.error(
+                "Research request failed error_type=%s",
+                type(exc).__name__,
+            )
             emit_event("research.failed", depth=request.depth.value)
             raise
         increment("research.completed")

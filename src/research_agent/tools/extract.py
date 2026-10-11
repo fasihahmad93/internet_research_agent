@@ -2,12 +2,14 @@
 
 from html.parser import HTMLParser
 
+from research_agent.observability.logging_config import log_function
 from research_agent.tools.base import FetchedPage
 
 
 class _TextParser(HTMLParser):
     _ignored = {"script", "style", "noscript", "svg", "nav", "footer"}
 
+    @log_function
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self._ignored_depth = 0
@@ -36,6 +38,7 @@ class _TextParser(HTMLParser):
 class HtmlPageExtractor:
     """Extract readable text while omitting common non-content elements."""
 
+    @log_function
     def extract(self, page: FetchedPage) -> str:
         parser = _TextParser()
         parser.feed(page.html)

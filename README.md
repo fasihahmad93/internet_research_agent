@@ -23,6 +23,8 @@ project-root `.env` file is loaded without overriding variables already set in
 the process environment. Adjust `.env` to configure the server, model, database,
 timeouts, response limits, and `PROMPT_FILE`. The YAML file at
 `src/research_agent/agent/prompts.yaml` contains the report prompt template.
+Set `LOG_LEVEL=DEBUG` in `.env` to enable function start/completion timings.
+Function trace logs intentionally omit arguments and return values.
 
 ## Run
 
@@ -51,6 +53,18 @@ Check whether Ollama is reachable with:
 ```bash
 python scripts/check_ollama.py
 ```
+
+Generate a research plan without running the full search pipeline:
+
+```bash
+python scripts/plan_research.py "How do heat pumps work?"
+# Or, after installing the project:
+research-plan "How do heat pumps work?"
+```
+
+This uses `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, and the `planner` prompt in the
+YAML file selected by `PROMPT_FILE`. It prints a JSON object containing the
+objective, subquestions, ordered steps, and suggested search queries.
 
 ## Test
 

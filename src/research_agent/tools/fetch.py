@@ -5,10 +5,12 @@ from urllib.error import URLError
 from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
+from research_agent.observability.logging_config import log_function
 from research_agent.tools.base import FetchedPage
 
 
 class _TitleParser(HTMLParser):
+    @log_function
     def __init__(self) -> None:
         super().__init__()
         self.in_title = False
@@ -33,10 +35,12 @@ class _TitleParser(HTMLParser):
 class HttpPageFetcher:
     """Fetch bounded HTTP(S) pages with a descriptive user agent."""
 
+    @log_function
     def __init__(self, timeout: float = 15, max_bytes: int = 2_000_000) -> None:
         self._timeout = timeout
         self._max_bytes = max_bytes
 
+    @log_function
     def fetch(self, url: str) -> FetchedPage:
         parsed = urlsplit(url)
         if parsed.scheme not in {"http", "https"} or not parsed.hostname:

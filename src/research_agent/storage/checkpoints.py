@@ -4,15 +4,18 @@ import json
 from datetime import UTC, datetime
 from uuid import uuid4
 
+from research_agent.observability.logging_config import log_function
 from research_agent.storage.database import Database
 
 
 class CheckpointRepository:
     """Persist opaque JSON state snapshots for later workflow resumption."""
 
+    @log_function
     def __init__(self, database: Database) -> None:
         self._database = database
 
+    @log_function
     def save(self, state: dict[str, object]) -> str:
         checkpoint_id = str(uuid4())
         self._database.initialize()
@@ -26,6 +29,7 @@ class CheckpointRepository:
             )
         return checkpoint_id
 
+    @log_function
     def get(self, checkpoint_id: str) -> dict[str, object] | None:
         self._database.initialize()
         with self._database.connection() as connection:

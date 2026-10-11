@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from research_agent.models.evidence import SearchHit
+from research_agent.observability.logging_config import log_function
 
 
 class _DuckDuckGoParser(HTMLParser):
@@ -50,9 +51,11 @@ class _DuckDuckGoParser(HTMLParser):
 class DuckDuckGoSearch:
     """Search the public DuckDuckGo HTML endpoint."""
 
+    @log_function
     def __init__(self, timeout: float = 15) -> None:
         self._timeout = timeout
 
+    @log_function
     def search(self, query: str, limit: int) -> list[SearchHit]:
         if limit < 1:
             raise ValueError("limit must be at least 1")
