@@ -6,6 +6,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from research_agent.observability.logging_config import log_function
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PROMPT_FILE = Path(__file__).resolve().parent / "agent" / "prompts.yaml"
 
@@ -23,8 +25,10 @@ class Settings:
     request_timeout_seconds: float = 20.0
     max_response_bytes: int = 2_000_000
     prompt_file: Path = DEFAULT_PROMPT_FILE
+    log_level: str = "INFO"
 
     @classmethod
+    @log_function
     def from_environment(cls) -> "Settings":
         """Build settings from environment variables with validated values."""
         load_dotenv(PROJECT_ROOT / ".env", override=False)
@@ -47,6 +51,11 @@ class Settings:
             raise ValueError("REQUEST_TIMEOUT_SECONDS must be positive")
         if max_response_bytes <= 0:
             raise ValueError("MAX_RESPONSE_BYTES must be positive")
+        log_level = os.getenv("LOG_LEVEL", cls.log_level).upper()
+        if log_level not in {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}:
+            raise ValueError(
+                "LOG_LEVEL must be DEBUG, INFO, WARNING, ERROR, or CRITICAL"
+            )
 
         database_path = Path(
             os.getenv("DATABASE_PATH", str(cls.database_path))
@@ -71,4 +80,5 @@ class Settings:
             request_timeout_seconds=timeout,
             max_response_bytes=max_response_bytes,
             prompt_file=prompt_file,
+            log_level=log_level,
         )

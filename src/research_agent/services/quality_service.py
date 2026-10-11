@@ -1,9 +1,11 @@
 """Research quality evaluation service."""
 
 from research_agent.models.evidence import EvidenceItem
+from research_agent.observability.logging_config import log_function
 from research_agent.models.report import ReportDraft
 
 
+@log_function
 def score_report(draft: ReportDraft, evidence: list[EvidenceItem]) -> float:
     """Score source coverage, source diversity, and supported findings."""
     if not evidence:

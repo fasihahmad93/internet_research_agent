@@ -1,15 +1,18 @@
 """Persistence repository implementations."""
 
 from research_agent.models.report import ResearchReport
+from research_agent.observability.logging_config import log_function
 from research_agent.storage.database import Database
 
 
 class ReportRepository:
     """Store and retrieve completed research reports."""
 
+    @log_function
     def __init__(self, database: Database) -> None:
         self._database = database
 
+    @log_function
     def save(self, report: ResearchReport) -> None:
         self._database.initialize()
         with self._database.connection() as connection:
@@ -27,6 +30,7 @@ class ReportRepository:
                 ),
             )
 
+    @log_function
     def get(self, report_id: str) -> ResearchReport | None:
         self._database.initialize()
         with self._database.connection() as connection:

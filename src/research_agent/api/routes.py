@@ -9,12 +9,14 @@ from research_agent.api.schemas import (
     ResearchRequest,
     ResearchResponse,
 )
+from research_agent.observability.logging_config import log_function
 from research_agent.services.research_service import ResearchRunner
 
 router = APIRouter()
 
 
 @router.get("/health", response_model=HealthResponse, tags=["health"])
+@log_function
 def health_check() -> HealthResponse:
     """Report whether the API process is responsive."""
     return HealthResponse(status="ok")
@@ -26,6 +28,7 @@ def health_check() -> HealthResponse:
     tags=["research"],
     summary="Research a question",
 )
+@log_function
 def create_research(
     request: ResearchRequest,
     service: ResearchRunner = Depends(get_research_service),

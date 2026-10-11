@@ -23,6 +23,7 @@ dev = [
 
 [project.scripts]
 research-agent = "research_agent.main:run"
+research-plan = "research_agent.planner_cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/research_agent"]

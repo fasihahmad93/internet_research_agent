@@ -6,12 +6,14 @@ from research_agent.agent.state import ResearchState
 from research_agent.llm.base import LanguageModel
 from research_agent.models.research import ResearchRequest
 from research_agent.models.report import ResearchReport
+from research_agent.observability.logging_config import log_function
 from research_agent.tools.base import PageExtractor, PageFetcher, SearchProvider
 
 
 class ResearchGraph:
     """Execute search, evidence collection, and report generation in order."""
 
+    @log_function
     def __init__(
         self,
         search: SearchProvider,
@@ -24,6 +26,7 @@ class ResearchGraph:
         self._extractor = extractor
         self._llm = llm
 
+    @log_function
     def run(self, request: ResearchRequest) -> ResearchReport:
         state = ResearchState(request=request)
         search_node(state, self._search)

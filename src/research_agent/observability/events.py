@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
 
+from research_agent.observability.logging_config import log_function
+
 logger = logging.getLogger(__name__)
 
 
@@ -17,6 +19,7 @@ class ResearchEvent:
     occurred_at: datetime
 
 
+@log_function
 def emit_event(name: str, **attributes: Any) -> ResearchEvent:
     """Create and log an event without exposing sensitive request contents."""
     event = ResearchEvent(name, attributes, datetime.now(UTC))

@@ -7,10 +7,12 @@ from typing import TypeVar
 from pydantic import BaseModel, ValidationError
 
 from research_agent.llm.base import LanguageModel
+from research_agent.observability.logging_config import log_function
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 
 
+@log_function
 def generate_structured(
     llm: LanguageModel, prompt: str, schema: type[ModelT]
 ) -> ModelT:

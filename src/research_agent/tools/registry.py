@@ -6,6 +6,7 @@ from research_agent.config import Settings
 from research_agent.tools.extract import HtmlPageExtractor
 from research_agent.tools.fetch import HttpPageFetcher
 from research_agent.tools.search import DuckDuckGoSearch
+from research_agent.observability.logging_config import log_function
 
 
 @dataclass(frozen=True)
@@ -17,6 +18,7 @@ class ToolRegistry:
     extract: HtmlPageExtractor
 
 
+@log_function
 def create_tool_registry(settings: Settings) -> ToolRegistry:
     """Create tools configured with the application's transport limits."""
     return ToolRegistry(

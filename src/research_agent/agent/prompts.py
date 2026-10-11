@@ -4,8 +4,10 @@ import yaml
 
 from research_agent.config import Settings
 from research_agent.models.evidence import EvidenceItem
+from research_agent.observability.logging_config import log_function
 
 
+@log_function
 def report_prompt(query: str, evidence: list[EvidenceItem]) -> str:
     """Load and render the source-grounded report prompt from YAML."""
     prompt_file = Settings.from_environment().prompt_file

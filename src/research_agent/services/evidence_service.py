@@ -3,15 +3,18 @@
 from urllib.parse import urldefrag, urlsplit, urlunsplit
 
 from research_agent.models.evidence import EvidenceItem, SearchHit
+from research_agent.observability.logging_config import log_function
 from research_agent.tools.base import PageFetcher, PageExtractor
 
 
+@log_function
 def normalize_url(url: str) -> str:
     """Normalize a source URL for duplicate detection."""
     parts = urlsplit(urldefrag(url).url)
     return urlunsplit((parts.scheme.lower(), parts.netloc.lower(), parts.path, parts.query, ""))
 
 
+@log_function
 def collect_evidence(
     hits: list[SearchHit],
     fetcher: PageFetcher,

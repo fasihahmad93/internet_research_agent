@@ -42,3 +42,22 @@ def test_research_endpoint_returns_report(tmp_path) -> None:
 
     assert response.status_code == 200
     assert response.json()["report"]["title"] == "Test report"
+
+
+def test_api_documentation_is_available(tmp_path) -> None:
+    app = create_app(
+        Settings(database_path=tmp_path / "test.sqlite3"),
+        StubResearchService(),
+    )
+    client = TestClient(app)
+
+    docs_response = client.get("/docs")
+    redoc_response = client.get("/redoc")
+    schema_response = client.get("/openapi.json")
+
+    assert docs_response.status_code == 200
+    assert "Swagger UI" in docs_response.text
+    assert redoc_response.status_code == 200
+    assert "ReDoc" in redoc_response.text
+    assert schema_response.status_code == 200
+    assert "/research" in schema_response.json()["paths"]

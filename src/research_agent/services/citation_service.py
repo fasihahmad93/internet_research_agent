@@ -1,14 +1,17 @@
 """Citation formatting and validation service."""
 
 from research_agent.models.evidence import EvidenceItem
+from research_agent.observability.logging_config import log_function
 from research_agent.models.report import ReportDraft
 
 
+@log_function
 def format_citation(evidence: EvidenceItem, number: int) -> str:
     """Format a source as a compact numbered citation."""
     return f"[{number}] {evidence.title}. {evidence.url}"
 
 
+@log_function
 def validate_citations(
     draft: ReportDraft, evidence: list[EvidenceItem]
 ) -> None:

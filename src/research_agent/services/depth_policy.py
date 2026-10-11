@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 
 from research_agent.models.research import ResearchDepth
+from research_agent.observability.logging_config import log_function
 
 
 @dataclass(frozen=True)
@@ -21,6 +22,7 @@ _LIMITS = {
 }
 
 
+@log_function
 def limits_for(depth: ResearchDepth) -> DepthLimits:
     """Return search and page limits for the requested depth."""
     return _LIMITS[depth]

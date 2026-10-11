@@ -4,6 +4,8 @@ from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from research_agent.observability.logging_config import log_function
+
 
 class ResearchDepth(StrEnum):
     """How broad a search should be."""
@@ -23,6 +25,7 @@ class ResearchRequest(BaseModel):
 
     @field_validator("query")
     @classmethod
+    @log_function
     def query_must_contain_non_whitespace(cls, query: str) -> str:
         if not query.strip():
             raise ValueError("query must contain non-whitespace characters")
