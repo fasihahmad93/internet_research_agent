@@ -1,0 +1,10 @@
+report: |
+  Write a concise, factual research report answering the question.
+  Use only claims supported by the provided evidence. Each finding must
+  cite one or more exact Evidence IDs. Do not invent IDs. If the sources
+  do not establish an answer, say so in the summary.
+
+  Question: {query}
+
+  Sources:
+  {sources}
