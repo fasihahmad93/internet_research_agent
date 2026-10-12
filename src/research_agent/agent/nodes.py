@@ -32,6 +32,7 @@ def evidence_node(
         extractor,
         max_pages=limits.max_pages,
         max_chars_per_page=limits.max_chars_per_page,
+        query=state.request.query,
     )
 
 
