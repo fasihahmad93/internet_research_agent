@@ -23,26 +23,32 @@ def collect_evidence(
     max_pages: int,
     max_chars_per_page: int,
 ) -> list[EvidenceItem]:
-    """Fetch unique search hits and convert them into evidence items."""
+    """Fetch unique search hits and capture links discovered on each page."""
+    if max_pages < 1 or max_chars_per_page < 1:
+        raise ValueError("page and character limits must be positive")
     collected: list[EvidenceItem] = []
     seen_urls: set[str] = set()
     for hit in hits:
-        normalized = normalize_url(hit.url)
-        if normalized in seen_urls:
+        if normalize_url(hit.url) in seen_urls:
             continue
-        seen_urls.add(normalized)
-        page = fetcher.fetch(hit.url)
-        content = extractor.extract(page)[:max_chars_per_page].strip()
-        if not content:
-            continue
-        collected.append(
-            EvidenceItem(
+        seen_urls.add(normalize_url(hit.url))
+        try:
+            page = fetcher.fetch(hit.url)
+            content = extractor.extract(page)[:max_chars_per_page].strip()
+            if not content:
+                continue
+            link_extractor = getattr(extractor, "extract_links", None)
+            discovered = link_extractor(page) if callable(link_extractor) else []
+            links = list(dict.fromkeys(url for url, anchor in discovered))
+            collected.append(EvidenceItem(
                 title=hit.title or page.title or hit.url,
-                url=hit.url,
+                url=page.url or hit.url,
                 snippet=hit.snippet,
                 content=content,
-            )
-        )
+                links=links,
+            ))
+        except (OSError, RuntimeError, ValueError):
+            continue
         if len(collected) >= max_pages:
             break
     return collected
