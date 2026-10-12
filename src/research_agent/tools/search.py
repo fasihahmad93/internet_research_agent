@@ -1,10 +1,13 @@
 """DuckDuckGo HTML search provider using the Python standard library."""
 
+import ssl
 import time
 from html.parser import HTMLParser
 from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, urlencode, urlsplit
 from urllib.request import Request, urlopen
+
+import certifi
 
 from research_agent.models.evidence import SearchHit
 from research_agent.observability.logging_config import log_function
@@ -88,7 +91,8 @@ class DuckDuckGoSearch:
                 },
             )
             try:
-                with urlopen(request, timeout=self._timeout) as response:
+                ssl_context = ssl.create_default_context(cafile=certifi.where())
+                with urlopen(request, timeout=self._timeout, context=ssl_context) as response:
                     html = response.read(2_000_000).decode("utf-8", errors="replace")
                 parser = _DuckDuckGoParser()
                 parser.feed(html)
