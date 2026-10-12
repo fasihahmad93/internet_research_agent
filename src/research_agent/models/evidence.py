@@ -15,7 +15,7 @@ class SearchHit(BaseModel):
 
 
 class EvidenceItem(BaseModel):
-    """A fetched source with a concise excerpt for report citations."""
+    """A fetched source with its excerpt, source URL, and discovered links."""
 
     model_config = ConfigDict(str_strip_whitespace=True)
 
@@ -24,6 +24,7 @@ class EvidenceItem(BaseModel):
     url: str
     snippet: str = ""
     content: str
+    links: list[str] = Field(default_factory=list)
     retrieved_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
