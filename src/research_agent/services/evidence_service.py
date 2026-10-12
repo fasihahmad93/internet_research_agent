@@ -24,9 +24,9 @@ def normalize_url(url: str) -> str:
 
 def _query_terms(query: str) -> set[str]:
     return {
-        token.lower().strip(".,:;!?()[]{}'\\"")
+        token.lower().strip(".,:;!?()[]{}")
         for token in query.split()
-        if len(token.strip(".,:;!?()[]{}'\\"")) > 2
+        if len(token.strip(".,:;!?()[]{}")) > 2
         and token.lower() not in _STOP_WORDS
     }
 
@@ -45,13 +45,13 @@ def collect_evidence(
     if max_pages < 1 or max_chars_per_page < 1:
         raise ValueError("page and character limits must be positive")
 
-    queue = deque((hit, 0, "") for hit in hits)
+    queue = deque((hit, 0) for hit in hits)
     collected: list[EvidenceItem] = []
     seen_urls: set[str] = set()
     terms = _query_terms(query)
 
     while queue and len(collected) < max_pages:
-        hit, depth, parent_host = queue.popleft()
+        hit, depth = queue.popleft()
         normalized = normalize_url(hit.url)
         if normalized in seen_urls:
             continue
@@ -93,7 +93,7 @@ def collect_evidence(
                         snippet="Relevant internal link discovered on a search result page",
                     ))
                 for follow_hit in reversed(relevant[:max_pages - len(collected)]):
-                    queue.appendleft((follow_hit, 1, page_host))
+                    queue.appendleft((follow_hit, 1))
         except (OSError, RuntimeError, ValueError):
             continue
 
