@@ -1,10 +1,13 @@
 """Web-page fetching tool with bounded retries and response limits."""
 
+import ssl
 import time
 from html.parser import HTMLParser
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
+
+import certifi
 
 from research_agent.observability.logging_config import log_function
 from research_agent.tools.base import FetchedPage
@@ -66,7 +69,8 @@ class HttpPageFetcher:
                 },
             )
             try:
-                with urlopen(request, timeout=self._timeout) as response:
+                ssl_context = ssl.create_default_context(cafile=certifi.where())
+                with urlopen(request, timeout=self._timeout, context=ssl_context) as response:
                     content_type = response.headers.get_content_type()
                     if content_type not in {"text/html", "application/xhtml+xml", "text/plain"}:
                         raise ValueError(f"Unsupported page content type: {content_type}")
